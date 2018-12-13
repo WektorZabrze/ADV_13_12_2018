@@ -54,6 +54,7 @@ private:
 		}
 
 		State operator() (const NotMoving& currentState) {
+			(void)currentState;
 			std::cout << "Car started driving forward." << std::endl;
 			return DrivesForward();
 		}
