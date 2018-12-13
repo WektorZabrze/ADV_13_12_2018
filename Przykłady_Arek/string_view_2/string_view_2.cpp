@@ -45,7 +45,7 @@ int main()
 	auto stringConstEnd = stringViewExample.cend();
 
 	std::cout << "Ostatni znak: " << stringConstEnd - 1 << std::endl;
-	std::cout << "I to samo: " stringEnd - 1 << std::endl;
+	std::cout << "I to samo: " << stringEnd - 1 << std::endl;
 
 	/**
 	 * Oraz iteratory odwrotne (zwracane przez rbegin, rend itp.)
