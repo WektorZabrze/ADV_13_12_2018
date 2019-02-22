@@ -17,25 +17,35 @@ class CarState
 		void printInfo() { std::cout << "Car is driving forward." << std::endl; }
 	};
 
-	/*
-	 * Tu proszę dopisać dwa pozostałe stany na wzór tego powyżej. 
-	 */
+	struct DrivesBackwards{
+		void printInfo() { std::cout << "Car is driving backwards." << std::endl; }
+	};
+
+	struct NotMoving {
+		void printInfo() { std::cout << "Car is not moving." << std::endl; }
+	};
 
 public:
 	
-	using State = /* UZUPEŁNIJ */;
+	using State = std::variant<NotMoving, DrivesBackwards, DrivesForward>;
 
 
 	void startDrivingForward() {
 		m_currentCarState = std::visit(StartsDrivingForwardEvent(), m_currentCarState);
 	}
 
-	/*
-	 * Tu proszę dopisać pozostałe metody realizujące zmianę stanu na wzór
-	 * metody powyżej. 
-	 * Proszę również napisać metodę printCurrentState która korzysta z 
-	 * poznanego na prezentacji mechanizmu polimorfizmu. 
-	 */
+	void startDrivingBackwards() {
+		m_currentCarState = std::visit(StartsDrivingBackwardEvent(), m_currentCarState);
+	}
+
+	void stopDriving() {
+		m_currentCarState = std::visit(StopsDrivingEvent(), m_currentCarState);
+	}
+
+	void printCurrentState() {
+		auto fun = [](auto& state){ state.printInfo();};
+		std::visit(fun, m_currentCarState);
+	}
 
 private:
 
@@ -60,10 +70,44 @@ private:
 		}
 	};
 
-	/*
-	 * Proszę dopisać pozostałe dwa eventy zmieniające stan - mają
-	 * działać na podobnej zasadzie jak ten powyżej. 
-	 */
+	struct StartsDrivingBackwardEvent {
+
+		State operator() (const DrivesForward& currentState) {
+			std::cout << "Car is driving forwards - must stop before driving backward." << std::endl;
+			return currentState;
+		}
+
+		State operator() (const DrivesBackwards& currentState) {
+			std::cout << "Car is already driving backward." << std::endl;
+			return currentState;
+		}
+
+		State operator() (const NotMoving& currentState) {
+			(void)currentState;
+			std::cout << "Car started driving backward." << std::endl;
+			return DrivesBackwards();
+		}
+	};
+
+	struct StopsDrivingEvent {
+
+		State operator() (const DrivesForward& currentState) {
+			(void)currentState;
+			std::cout << "Car stoped driving forward. Now it is not moving." << std::endl;
+			return NotMoving();
+		}
+
+		State operator() (const DrivesBackwards& currentState) {
+			(void)currentState;
+			std::cout << "Car stoped driving backwards. Now it is not moving. " << std::endl;
+			return NotMoving();
+		}
+
+		State operator() (const NotMoving& currentState) {
+			std::cout << "Car has already stoped." << std::endl;
+			return currentState;
+		}
+	};
 
 };
 

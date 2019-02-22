@@ -1,4 +1,4 @@
-CXX = g++ -g -Wall -Wextra -std=c++17 -pedantic-errors
+CXX = g++-8 -g -Wall -Wextra -std=c++17 -pedantic-errors
 
 
 DEP_FLAGS = -MMD -MP
